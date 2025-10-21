@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mind Booster AI 🌱</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #a2d2ff, #cdb4db);
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 700px;
+      padding: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      height: 90%;
+      overflow: hidden;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .chat-container {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      padding-right: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .message {
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 10px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+    .user-msg {
+      background: #48bfe3;
+      color: white;
+      align-self: flex-end;
+    }
+    .bot-msg {
+      background: #e0e0e0;
+      color: #333;
+      align-self: flex-start;
+    }
+    .history {
+      max-height: 120px;
+      overflow-y: auto;
+      background: #f0f0f0;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+    .input-area {
+      display: flex;
+      gap: 5px;
+    }
+    select, input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+    button.send-btn {
+      background: #48bfe3;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button.send-btn:hover {
+      background: #0096c7;
+    }
+    .new-chat {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 5px;
+      transition: background 0.3s ease;
+    }
+    .new-chat:hover {
+      background: #e63946;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mind Booster AI 🌱</h1>
+    <div class="history" id="history"></div>
+    <div class="chat-container" id="chat"></div>
+
+    <div class="input-area">
+      <select id="questionSelect">
+        <option disabled selected>Select a question...</option>
+      </select>
+      <button class="send-btn" onclick="sendMessage()">Send</button>
+    </div>
+
+    <button class="new-chat" onclick="newChat()">New Chat</button>
+  </div>
+
+  <script>
+    const questions = [
+      'How can I stay focused during work?',
+      'What are simple ways to boost positivity?',
+      'How do I handle stress effectively?',
+      'What are some morning habits for success?',
+      'How can I improve my productivity?',
+      'Tips for better sleep at night?',
+      'How to stay motivated every day?',
+      'Simple meditation techniques for beginners?',
+      'How can I increase my concentration?',
+      'Ways to practice gratitude daily?',
+      'How to overcome procrastination?',
+      'Best ways to manage time efficiently?',
+      'How to reduce negative thoughts?',
+      'Tips to boost confidence quickly?',
+      'How to create a positive mindset?',
+      'Strategies for mental clarity?',
+      'How can I improve self-discipline?',
+      'Ways to feel happier instantly?',
+      'How to stay calm under pressure?',
+      'Best exercises for mental health?'
+    ];
+
+    const replies = [
+      'Try focusing on one task at a time and take short breaks.',
+      'Start your day with gratitude and positive affirmations.',
+      'Practice deep breathing and mindfulness techniques.',
+      'Wake up early and create a morning routine with small wins.',
+      'Set clear goals and eliminate distractions.',
+      'Keep a consistent sleep schedule and avoid screens before bed.',
+      'Visualize your goals and reward yourself for progress.',
+      'Start with 5 minutes daily and increase gradually.',
+      'Practice the Pomodoro technique to enhance concentration.',
+      'Write down 3 things you are grateful for each day.',
+      'Break tasks into small steps and start immediately.',
+      'Use a planner and prioritize important tasks first.',
+      'Replace negative thoughts with positive affirmations.',
+      'Stand tall, smile, and repeat confidence phrases.',
+      'Focus on what you can control and take consistent action.',
+      'Declutter your workspace and organize tasks clearly.',
+      'Set small goals daily and celebrate achievements.',
+      'Engage in activities you love to lift your mood.',
+      'Take deep breaths and visualize calm situations.',
+      'Do daily physical activity to boost mental health.'
+    ];
+
+    const questionSelect = document.getElementById('questionSelect');
+    questions.forEach(q => {
+      const option = document.createElement('option');
+      option.value = q;
+      option.text = q;
+      questionSelect.appendChild(option);
+    });
+
+    let historyArr = [];
+
+    function sendMessage() {
+      const question = questionSelect.value;
+      if (!question) return;
+
+      const userMsg = document.createElement('div');
+      userMsg.classList.add('message', 'user-msg');
+      userMsg.innerText = question;
+      document.getElementById('chat').appendChild(userMsg);
+
+      const index = questions.indexOf(question);
+      const answer = replies[index] || '🤖 I will get back with a helpful tip soon!';
+
+      addBotMessage(answer, question);
+      document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
+    }
+
+    function addBotMessage(answer, question) {
+      const botMsg = document.createElement('div');
+      botMsg.classList.add('message', 'bot-msg');
+      botMsg.innerText = answer;
+      document.getElementById('chat').appendChild(botMsg);
+
+      const timestamp = new Date().toLocaleTimeString();
+      historyArr.push({question, answer, time: timestamp});
+      updateHistory();
+    }
+
+    function updateHistory() {
+      const historyDiv = document.getElementById('history');
+      historyDiv.innerHTML = '';
+      historyArr.forEach(item => {
+        const entry = document.createElement('div');
+        entry.innerText = `[${item.time}] Q: ${item.question} → A: ${item.answer}`;
+        historyDiv.appendChild(entry);
+      });
+    }
+
+    function newChat() {
+      document.getElementById('chat').innerHTML = '';
+      historyArr = [];
+      updateHistory();
+    }
+  </script>
+</body>
+</html>
